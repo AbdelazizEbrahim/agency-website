@@ -9,10 +9,11 @@ const ResponsiveNav = () => {
   const [showNav, setShowNav] = useState(false);
   const showNavHandler = () => setShowNav(true);
   const closeNavHandler = () => setShowNav(false);
+
   return (
-    <div>
-      <Nav openNav={showNavHandler}/>
-      <MobileNav nav={showNav} closeNav={closeNavHandler}/>
+    <div className='fixed top-0 left-0 w-full z-50'>
+      <Nav openNav={showNavHandler} />
+      <MobileNav nav={showNav} closeNav={closeNavHandler} />
     </div>
   )
 }
