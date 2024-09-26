@@ -3,7 +3,6 @@ import icon1 from '@/public/icon1.png'
 import icon2 from '@/public/icon2.png'
 import SupportTeam from'@/public/supportteam.jpg'
 import Image from 'next/image'
-import CustomerSupport from '@/public/customerSupport.jpg'
 
 const SupportTeams = () => {
   return (
