@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import {Poppins} from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import ResponsiveNav from "./components/Navigation/ResponsiveNav";
+import AppProvider from "./components/AppContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"]
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -15,17 +16,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={poppins.className}
-      >
-        <ResponsiveNav/>
-        {children}
+      <body className={poppins.className}>
+        {/* Wrap everything with AppProvider */}
+        <AppProvider>
+          <ResponsiveNav />
+          {children}
+        </AppProvider>
       </body>
     </html>
   );
