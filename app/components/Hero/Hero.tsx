@@ -26,7 +26,7 @@ const Hero = () => {
   },[])
 
   return (
-    <div className='h-[75vh] lg:h-[66vh] md:h-[96vh] sm:h-[80vh] flex items-center flex-col justify-center mt-[5rem]'>
+    <div className='h-[75vh] lg:h-[80vh] md:h-[130vh] sm:h-[90vh] flex items-center flex-col justify-center mt-[5rem] mt-'>
       <div className='grid grid-cols-1 lg:grid-cols-5 items-center w-[80%] mx-auto'>
         <div className='col-span-2'>
           <h1    
@@ -41,21 +41,28 @@ const Hero = () => {
               {heroTextData.text}
           </p>
           <div 
-             data-aos = 'zoom-in'
-             data-aos-delay = '400'
-             className='flex items-center space-x-4 md:space-x-6'>
-            <ButtonBlue text="Get Started" 
-            />
+            data-aos = 'zoom-in'
+            data-aos-delay = '400'
+            className='flex items-center space-x-4 md:space-x-6'>
+            <ButtonBlue text="Get Started" />
             <ButtonRed text="Explore Features" />
           </div>
         </div>
         <div 
-           data-aos = 'zoom-in'
-           data-aos-delay = '600'
-           className='col-span-3 hidden sm:block'>
-          <Image src={HeroImg} alt="hero" />
+          data-aos = 'zoom-in'
+          data-aos-delay = '600'
+          className='col-span-3 hidden sm:block'>
+          <Image 
+            src={HeroImg} 
+            layout="responsive"  // Make image responsive
+            width={700}          // Example width for responsiveness
+            height={475}         // Example height for responsiveness (use aspect ratio)
+            alt="hero"
+            className="w-full h-auto object-cover" // Full width and height responsive
+          />
         </div>
       </div>
+
     </div>
   );
 };

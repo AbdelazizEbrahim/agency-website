@@ -1,60 +1,75 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../utils/firebase'; 
+import { fetchUserData } from '../utils/userData';
 
 const HeroText = () => {
   const { data: session, status } = useSession();
-  const [userData, setUserData] = useState(null);
-  const [heroTextData, setHeroTextData] = useState({ title: '', text: '' });
+  const [, setUserData] = useState(null);
+  const [heroTextData, setHeroTextData] = useState({ title: '', text: '', image: '' });
   const [isAdmin, setIsAdmin] = useState(false);
-  const [formMode, setFormMode] = useState('POST');
-  
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch user data and check if the user is admin
-    const fetchUserData = async () => {
-      if (session?.user?.email) {
-        try {
-          const response = await fetch(`/api/signup?email=${encodeURIComponent(session.user.email)}`);
-          const data = await response.json();
-
-          setUserData(data);
-          console.log("data:", data);
-          setIsAdmin(data?.isAdmin || false); // Check if the user is an admin
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      }
+    const getUserData = async () => {
+      const data = await fetchUserData(session?.user?.email);
+      setUserData(data);
+      setIsAdmin(data?.isAdmin || false);
     };
 
-    // Fetch the hero text data from the API
     const fetchHeroText = async () => {
       try {
         const response = await fetch('/api/heroText');
         if (response.ok) {
           const data = await response.json();
           setHeroTextData(data);
-          console.log("hero text data: ", data);
-          setFormMode('PUT'); 
-        } else {
-          setFormMode('POST'); 
         }
       } catch (error) {
         console.error('Error fetching hero text:', error);
       }
     };
 
-    fetchUserData();
+    getUserData();
     fetchHeroText();
   }, [session?.user?.email]);
 
+  const handleFileChange = (ev) => {
+    setLoading(true);
+    const file = ev.target.files[0];
+    if (file) {
+      handleUpload(file);
+    }
+  };
+
+  const handleUpload = (file) => {
+    const fileRef = ref(storage, `images/${file.name}`);
+    const uploadTask = uploadBytesResumable(fileRef, file);
+
+    uploadTask.on(
+      'state_changed',
+      null,
+      (error) => {
+        console.error('Error uploading file:', error);
+        setLoading(false); // Stop loading in case of an error
+      },
+      async () => {
+        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        setHeroTextData((prev) => ({ ...prev, image: downloadUrl }));
+        setLoading(false); // Stop loading after successful upload
+      }
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch('/api/heroText', {
-        method: formMode,
+        method: 'PUT', // Assuming you're updating existing hero text, change to POST if creating new
         headers: {
           'Content-Type': 'application/json',
         },
@@ -62,13 +77,15 @@ const HeroText = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to ${formMode === 'POST' ? 'create' : 'update'} hero text`);
+        throw new Error('Failed to update hero text');
       }
 
       const data = await response.json();
-      console.log(`${formMode === 'POST' ? 'Created' : 'Updated'} hero text successfully:`, data);
+      console.log('Updated hero text successfully:', data);
     } catch (error) {
       console.error('Error submitting hero text:', error);
+    } finally {
+      setLoading(false); // Stop loading after submission
     }
   };
 
@@ -76,48 +93,52 @@ const HeroText = () => {
     return <div>Loading...</div>;
   }
 
-  if (!isAdmin) {
+  if (heroTextData && !isAdmin) {
     return <div className="mt-20 text-red-500">You are not admin</div>;
   }
 
   return (
-    <div className="mt-20 ml-20">
-      <h1 className="text-xl font-bold mb-4">{formMode === 'POST' ? 'Create Hero Text' : 'Update Hero Text'}</h1>
+    <div className="mt-20 ml-20 flex">
+      {/* Image Section */}
+      <div className="w-1/3 pr-4">
+        {heroTextData.image ? (
+          <img src={heroTextData.image} alt="Hero" className="w-full h-auto rounded mb-4" />
+        ) : (
+          <div className="h-32 bg-gray-300 flex items-center justify-center mb-4 rounded">No Image</div>
+        )}
+        <input type="file" onChange={handleFileChange} className="mb-2" />
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 w-2/3 ">
-        <div>
-          <label htmlFor="title" className="block font-semibold mb-2">Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={heroTextData.title}
-            onChange={(e) => setHeroTextData({ ...heroTextData, title: e.target.value })}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="text" className="block font-semibold mb-2">Text</label>
-          <textarea
-            id="text"
-            name="text"
-            className="w-full p-2 border border-gray-300 rounded"
-            rows={4}
-            value={heroTextData.text}
-            onChange={(e) => setHeroTextData({ ...heroTextData, text: e.target.value })}
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {formMode === 'POST' ? 'Create Hero Text' : 'Update Hero Text'}
-        </button>
-      </form>
+      {/* Text Section */}
+      <div className="w-2/3">
+        <h1 className="text-xl font-bold mb-4">Update Hero Text</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1">Title</label>
+            <input
+              type="text"
+              value={heroTextData.title}
+              onChange={(e) => setHeroTextData((prev) => ({ ...prev, title: e.target.value }))}
+              className="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1">Text</label>
+            <textarea
+              value={heroTextData.text}
+              onChange={(e) => setHeroTextData((prev) => ({ ...prev, text: e.target.value }))}
+              className="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Update Hero Text'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

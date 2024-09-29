@@ -38,3 +38,21 @@ export async function GET(request) {
     return new Response(JSON.stringify(users), { status: 200 }); 
   }
   
+  export async function PUT(req) {
+    try {
+      await mongoose.connect(process.env.MONGO_URL);
+      const { _id, isAdmin } = await req.json();
+      const updatedUser = await User.findByIdAndUpdate(
+        _id,
+        { isAdmin },
+        { new: true } 
+      );
+  
+       return Response.json(updatedUser);
+    } catch (error) {
+      console.error('Error updating hero text:', error);
+      return Response.json({ error: 'Internal server error' });
+    }
+  }
+
+

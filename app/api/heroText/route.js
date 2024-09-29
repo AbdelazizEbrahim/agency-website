@@ -1,51 +1,50 @@
 import mongoose from 'mongoose';
 import HeroText from '../../models/HeroText';
 
-export async function GET(req, res) {
+export async function GET() {
   try {
     await mongoose.connect(process.env.MONGO_URL);
-    console.log("finding...:");
+    // console.log("finding...:");
     const heroText = await HeroText.findOne();
-    console.log("hero te:");
     if (!heroText) {
-      return res.json({ message: 'Hero text not found' });
+      return Response.json({ message: 'Hero text not found' });
     }
 
-    console.log("hero text:", heroText);
+    // console.log("hero text:", heroText);
     return Response.json(heroText);
   } catch (error) {
     console.error('Error fetching hero text:', error);
-    return res.json({ error: 'Internal server error' });
+    return Response.json({ error: 'Internal server error' });
   }
 }
 
-export async function PUT(req, res) {
+export async function PUT(req) {
   try {
     await mongoose.connect(process.env.MONGO_URL);
-    const { _id, title, text } = await req.json();
+    const { _id, image, title, text } = await req.json();
     const updatedHeroText = await HeroText.findByIdAndUpdate(
       _id,
-      { title, text },
+      { image, title, text },
       { new: true, upsert: true } 
     );
 
-     return res.json(updatedHeroText);
+     return Response.json(updatedHeroText);
   } catch (error) {
     console.error('Error updating hero text:', error);
-    return res.json({ error: 'Internal server error' });
+    return Response.json({ error: 'Internal server error' });
   }
 }
 
-export async function POST(req, res) {
+export async function POST(req) {
   try {
     await mongoose.connect(process.env.MONGO_URL);
-    const { title, text } = await req.json();
-    const newHeroText = new HeroText({ title, text });
+    const {image, title, text } = await req.json();
+    const newHeroText = new HeroText({image, title, text });
     await newHeroText.save();
 
-    return res.json(newHeroText);
+    return Response.json(newHeroText);
   } catch (error) {
     console.error('Error creating hero text:', error);
-    return res.json({ error: 'Internal server error' });
+    return Response.json({ error: 'Internal server error' });
   }
 }
