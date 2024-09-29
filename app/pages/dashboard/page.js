@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { fetchUserData } from '../utils/userData';
+import { fetchUserData } from '../../utils/userData';
 import { useSession } from 'next-auth/react'; // Ensure you import useSession
 
 const DashBoard = () => {
   const { data: session } = useSession(); // Access the session
   const [users, setUsers] = useState([]); // To store the list of users
   const [loading, setLoading] = useState(true); // Initial loading state
-  const [userData, setUserData] = useState(null);
+  const [, setUserData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  // const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Fetch user data and users on component mount
   useEffect(() => {
@@ -20,6 +21,7 @@ const DashBoard = () => {
           const data = await fetchUserData(session.user.email);
           setUserData(data);
           setIsAdmin(data?.isAdmin || false);
+          // setIsSuperAdmin(data?.isSuperAdmin || false);
         } catch (error) {
           console.error('Error fetching user data:', error);
         }

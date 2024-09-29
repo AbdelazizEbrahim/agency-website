@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react'; // Import useSession to check user session
 import { useRouter } from 'next/navigation'; // Import useRouter for redirection
-import ButtonBlue from '../components/Buttons/ButtonBlue';
+import ButtonBlue from '../../components/Buttons/ButtonBlue';
 import Image from 'next/image';
 
 const SignInPage = () => {

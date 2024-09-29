@@ -111,19 +111,19 @@ const Nav = ({ openNav }: Props) => {
                   <div className="absolute -right-10 mt-8 w-32 bg-white rounded-md shadow-lg z-10">
                     <ul className="py-1">
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <Link href="/dashboard">Dashboard</Link>
+                        <Link href="/pages/dashboard">Dashboard</Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <Link href="/heroText">Hero Text</Link>
+                        <Link href="/pages/heroText">Hero Text</Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <Link href="/services">Services</Link>
+                        <Link href="/pages/services">Services</Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <Link href="/about">About Page</Link>
+                        <Link href="/pages/about">About Page</Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                        <Link href="/blogs">Blogs</Link>
+                        <Link href="/pages/blogs">Blogs</Link>
                       </li>
                     </ul>
                   </div>
@@ -132,10 +132,10 @@ const Nav = ({ openNav }: Props) => {
             </>
           ) : (
             <>
-              <Link href="/signin">
+              <Link href="/pages/signin">
                 <ButtonBlue text="Login" />
               </Link>
-              <Link href="/signup">
+              <Link href="/pages/signup">
                 <ButtonRed text="Sign Up" />
               </Link>
             </>

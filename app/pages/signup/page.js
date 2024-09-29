@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import ButtonBlue from '../components/Buttons/ButtonBlue';
+import ButtonBlue from '../../components/Buttons/ButtonBlue';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react'; // Import signIn from next-auth/react
 
