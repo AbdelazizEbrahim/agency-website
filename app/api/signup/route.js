@@ -4,12 +4,11 @@ import bcrypt from 'bcrypt';
 
 export async function POST(req) {
     await mongoose.connect(process.env.MONGO_URL);
-    const {email, password} = await req.json();
+    const { email, password } = await req.json();
 
-
-    const existingUser = await User.findOne({email})
-    if (existingUser){
-        return;
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return new Response(JSON.stringify({ error: "User already exists" }), { status: 409 }); // Conflict
     }
 
     const saltRounds = 10; 
@@ -19,5 +18,23 @@ export async function POST(req) {
         password: hashedPassword, 
     });
 
-    return Response.json(user);
+    return new Response(JSON.stringify(user), { status: 201 }); // Created
 }
+
+export async function GET(request) {
+    await mongoose.connect(process.env.MONGO_URL);
+    
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get("email"); // Get email from query params
+    console.log("email: ", email);
+  
+    let users;
+    if (email) {
+        users = await User.findOne({ email });
+    } else {
+        users = await User.find();
+    }
+  
+    return new Response(JSON.stringify(users), { status: 200 }); 
+  }
+  

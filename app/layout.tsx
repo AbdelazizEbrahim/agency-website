@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={poppins.className}>
+    <html lang="en" className="scroll-smooth">
+      <body className={poppins.className }>
         {/* Wrap everything with AppProvider */}
         <AppProvider>
           <ResponsiveNav />
