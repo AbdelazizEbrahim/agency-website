@@ -3,9 +3,9 @@
 import React from 'react'
 import { useEffect } from 'react'
 import Hero from './components/Hero/Hero'
-import Features from './components/Features/Features'
-import CustomerSupport from './components/CustomerSupport/CustomerSupport'
-import SupportTeams from './components/SuppoetTeam/SupportTeams'
+import Features from './components/Services/Services'
+import CustomerSupport from './components/About/About'
+import SupportTeams from './components/SupportTeam/SupportTeams'
 import Footer from './components/Footer/Footer'
 import AOS from 'aos';
 import 'aos/dist/aos.css';

@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import ResponsiveNav from "./components/Navigation/ResponsiveNav";
 import AppProvider from "./components/AppContext";
+import { Toaster } from "react-hot-toast";
+
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,8 +24,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={poppins.className }>
-        {/* Wrap everything with AppProvider */}
         <AppProvider>
+          <Toaster />
           <ResponsiveNav />
           {children}
         </AppProvider>

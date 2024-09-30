@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import SectionHeading from '../SectionHeading/SectionHeading';
-import FeatureCard from './FeatureCard';
+import FeatureCard from './ServiceCard';
 import AOS from 'aos';
 import 'aos/dist/aos.css'; 
 
+// Define the shape of a feature
+interface Feature {
+  title: string;
+  image: string;
+  description: string;
+}
+
 const Features = () => {
-  const [features, setFeatures] = useState([]); // State to hold fetched features
+  const [features, setFeatures] = useState<Feature[]>([]); 
 
   useEffect(() => {
     const fetchFeatures = async () => {

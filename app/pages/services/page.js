@@ -144,7 +144,7 @@ const Services = () => {
   }
 
   return (
-    <div className='mt-20 m-10'>
+    <div className='mt-20 m-10 '>
       <h1 className='text-xl font-bold mb-6'>Services</h1>
 
       <button
@@ -155,7 +155,7 @@ const Services = () => {
       </button>
 
       {showForm && (
-        <div className='bg-gray-100 p-6 rounded-lg mb-8'>
+        <div className='bg-gray-100 p-6 rounded-lg mb-8 lg:w-1/2'>
           <h2 className='text-lg font-semibold mb-4'>Add New Service</h2>
           <div className='mb-4'>
             <label className='block mb-2'>Image</label>

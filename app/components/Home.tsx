@@ -2,10 +2,10 @@
 
 import React, { useEffect } from 'react'
 import Hero from './Hero/Hero'
-import Features from './Features/Features'
-import CustomerSupport from './CustomerSupport/CustomerSupport'
+import Services from './Services/Services'
+import AboutPage from './About/About'
 import Price from './Price/Price'
-import SupportTeams from './SuppoetTeam/SupportTeams'
+import SupportTeams from './SupportTeam/SupportTeams'
 import Footer from './Footer/Footer'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -24,8 +24,8 @@ const Home = () => {
   return (
     <div>
       <Hero/>
-      <Features/>
-      <CustomerSupport/>
+      <Services/>
+      <AboutPage/>
       <Price/>
       <SupportTeams/>
       <Footer/>
