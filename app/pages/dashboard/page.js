@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { fetchUserData } from '../../utils/userData';
 import { useSession } from 'next-auth/react'; // Ensure you import useSession
+import toast from 'react-hot-toast'; // Import toast for notifications
 
 const DashBoard = () => {
   const { data: session } = useSession(); // Access the session
@@ -11,7 +12,6 @@ const DashBoard = () => {
   const [loading, setLoading] = useState(true); // Initial loading state
   const [, setUserData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  // const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Fetch user data and users on component mount
   useEffect(() => {
@@ -21,7 +21,6 @@ const DashBoard = () => {
           const data = await fetchUserData(session.user.email);
           setUserData(data);
           setIsAdmin(data?.isAdmin || false);
-          // setIsSuperAdmin(data?.isSuperAdmin || false);
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -53,12 +52,16 @@ const DashBoard = () => {
   // Handle the change of the admin checkbox
   const handleAdminToggle = async (userId, currentIsAdmin) => {
     const newIsAdmin = !currentIsAdmin; // Toggle the admin status
+
     // Update the local state immediately
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
         user._id === userId ? { ...user, isAdmin: newIsAdmin } : user
       )
     );
+
+    // Show loading toast
+    const loadingToast = toast.loading(`Updating admin status...`);
 
     try {
       const response = await fetch(`/api/signup`, {
@@ -70,22 +73,27 @@ const DashBoard = () => {
       });
 
       if (!response.ok) {
-        console.error('Failed to update admin status');
-        // Optionally revert back to the previous state if the update fails
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user._id === userId ? { ...user, isAdmin: currentIsAdmin } : user
-          )
-        );
+        throw new Error('Failed to update admin status');
       }
+
+      // Show success notification
+      toast.success(`Admin status updated successfully for ${userId}`, {
+        id: loadingToast,
+      });
     } catch (error) {
       console.error('Error updating admin status:', error);
+
       // Optionally revert back to the previous state if the update fails
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user._id === userId ? { ...user, isAdmin: currentIsAdmin } : user
         )
       );
+
+      // Show error notification
+      toast.error('Error updating admin status', {
+        id: loadingToast,
+      });
     }
   };
 
