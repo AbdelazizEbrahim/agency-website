@@ -28,4 +28,3 @@ export async function DELETE(req) {
     await Blog.findByIdAndDelete(_id);
     return Response.json({message: "Text Deleted"});
 }
-

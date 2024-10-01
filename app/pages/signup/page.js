@@ -29,8 +29,7 @@ const SignUpPage = () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Sign Up Success:', data);
-      window.location.href = '/'; 
+      window.location.href = '/pages/signin'; 
     } else {
       const errorData = await response.json();
       console.error('Sign Up Failed:', errorData);
@@ -82,7 +81,7 @@ const SignUpPage = () => {
 
           <p className='mt-4 text-center text-gray-600'>
             Already have an account?{' '}
-            <Link href='/signin' className='text-blue-500 hover:underline'>
+            <Link href='/pages/signin' className='text-blue-500 hover:underline'>
               Sign In
             </Link>
           </p>

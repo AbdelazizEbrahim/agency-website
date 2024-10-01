@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 interface UserData {
   image?: string; 
-  isAdmin?: boolean;
+  isAdmin?: boolean; 
 }
 
 interface Props {
@@ -101,9 +101,9 @@ const Nav = ({ openNav }: Props) => {
           {status === 'authenticated' ? (
             <>
               <ButtonBlue text="Logout" onClick={handleLogout} />
-              { (
+              {userData && (
                 <Image
-                  src={userData?.image || '/user.png'}
+                  src={userData.image || '/user.png'}
                   alt="Profile"
                   width={40}
                   height={40}

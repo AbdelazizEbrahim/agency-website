@@ -5,6 +5,7 @@ const userSchema = new Schema({
     password: String,
     image: String,
     name: String,
+    googleId: String , 
     isAdmin: {type: Boolean, default: false}
 }, {timeStamp: true})
 

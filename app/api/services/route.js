@@ -5,13 +5,8 @@ export async function POST(req) {
     await mongoose.connect(process.env.MONGO_URL);
     
     const { image, title, description } = await req.json();
-
-    // Log the incoming request data
-    console.log('Received data:', { image, title, description });
-
     const newService = new Service({ image, title, description }); 
     await newService.save();
-
     return Response.json(newService);
 }
 
@@ -31,18 +26,10 @@ export async function DELETE (req) {
 }
 
 export async function PUT(req) {
-    console.log("Received PUT request"); // Log when the request is received
-
     await mongoose.connect(process.env.MONGO_URL);
-    console.log("Connected to MongoDB"); 
-
     const { _id, image, title, description } = await req.json();
-    console.log("Parsed data from request:", { _id, image, title, description }); 
-
     const updatedService = await Service.findByIdAndUpdate(_id, { image, title, description }, { new: true });
-    
     if (updatedService) {
-        console.log("Service updated successfully:", updatedService); 
     } else {
         console.error("Service not found for ID:", _id);
     }

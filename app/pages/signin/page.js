@@ -36,7 +36,6 @@ const SignInPage = () => {
     if (result?.error) {
       setError(result.error);
     } else {
-      // Successful login, redirect to home page
       router.push('/');
     }
   };
@@ -84,7 +83,7 @@ const SignInPage = () => {
           </div>
           <p className='mt-4 text-center text-gray-600'>
             Don’t have an account?{' '}
-            <Link href='/signup' className='text-blue-500 hover:underline'>
+            <Link href='/pages/signup' className='text-blue-500 hover:underline'>
               Sign Up
             </Link>
           </p>

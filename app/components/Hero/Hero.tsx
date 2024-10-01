@@ -14,7 +14,6 @@ const Hero = () => {
         if (response.ok) {
           const data = await response.json();
           setHeroTextData(data);
-          console.log("hero text data: ", data);
         } else {
         }
       } catch (error) {

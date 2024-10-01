@@ -4,13 +4,11 @@ import HeroText from '../../models/HeroText';
 export async function GET() {
   try {
     await mongoose.connect(process.env.MONGO_URL);
-    // console.log("finding...:");
     const heroText = await HeroText.findOne();
     if (!heroText) {
       return Response.json({ message: 'Hero text not found' });
     }
 
-    // console.log("hero text:", heroText);
     return Response.json(heroText);
   } catch (error) {
     console.error('Error fetching hero text:', error);

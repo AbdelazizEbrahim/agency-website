@@ -25,8 +25,7 @@ export async function GET(request) {
     await mongoose.connect(process.env.MONGO_URL);
     
     const { searchParams } = new URL(request.url);
-    const email = searchParams.get("email"); // Get email from query params
-    console.log("email: ", email);
+    const email = searchParams.get("email"); 
   
     let users;
     if (email) {

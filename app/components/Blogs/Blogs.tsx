@@ -65,7 +65,6 @@ const Blog: React.FC = () => {
     const fetchPosts = async () => {
       const response = await fetch('/api/blog');
       const data: BlogPost[] = await response.json();
-      console.log("Fetched blog posts:", data);
       setPosts(data);
     };
 

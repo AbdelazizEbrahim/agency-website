@@ -22,10 +22,7 @@ const Blog = () => {
     const fetchUserDataAndPosts = async () => {
       const userData = await fetchUserData(session?.user?.email);
       setIsAdmin(userData?.isAdmin || false);
-      console.log("name: ", userData?.name.split(' ')[0]);
       setAuthor(userData?.name.split(' ')[0]);
-
-      console.log("userdata: ", userData);
       
       try {
         const response = await fetch('/api/blog');
@@ -73,7 +70,6 @@ const Blog = () => {
   const saveOrUpdatePost = async () => {
     const method = newPost._id ? 'PUT' : 'POST';
     newPost.author = author;
-    console.log("new post: ", newPost)
     const response = await fetch('/api/blog', {
       method,
       headers: { 'Content-Type': 'application/json' },

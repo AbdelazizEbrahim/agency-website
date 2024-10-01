@@ -36,8 +36,6 @@ const ContactUs = () => {
         message: formData.message,
       };
 
-      console.log("form data to send: ", formDataToSend);
-
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
