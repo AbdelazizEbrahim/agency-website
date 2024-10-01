@@ -113,7 +113,7 @@ const DashBoard = () => {
           users.map((user) => (
             <div key={user._id} className='text-center p-5 border rounded-lg'>
               <Image
-                src={user.image || '/profile.png'}
+                src={user.image || '/user.png'}
                 alt={user.name}
                 width={100}
                 height={100}

@@ -103,7 +103,7 @@ const Nav = ({ openNav }: Props) => {
               <ButtonBlue text="Logout" onClick={handleLogout} />
               {userData?.image && (
                 <Image
-                  src={userData.image}
+                  src={userData.image || '/user.png'}
                   alt="Profile"
                   width={40}
                   height={40}
