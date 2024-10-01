@@ -1,15 +1,17 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { fetchUserData } from '../../utils/userData';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const HeroText = () => {
   const { data: session, status } = useSession();
-  const [, setUserData] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [heroTextData, setHeroTextData] = useState({ title: '', text: '', image: '' });
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const getUserData = async () => {
@@ -17,7 +19,11 @@ const HeroText = () => {
         try {
           const data = await fetchUserData(session.user.email);
           setUserData(data);
-          setIsAdmin(data?.isAdmin || false);
+          if (data?.isAdmin || data?.isSuperAdmin) {
+            setIsAdmin(true);
+          } else {
+            router.push('/'); 
+          }
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -27,12 +33,11 @@ const HeroText = () => {
     const fetchHeroText = async () => {
       try {
         const response = await fetch('/api/heroText');
-        if (response.ok) {
-          const data = await response.json();
-          setHeroTextData(data);
-        } else {
+        if (!response.ok) {
           throw new Error('Failed to fetch hero text');
         }
+        const data = await response.json();
+        setHeroTextData(data);
       } catch (error) {
         toast.error('Failed to fetch hero text');
         console.error('Error fetching hero text:', error);
@@ -41,12 +46,12 @@ const HeroText = () => {
 
     getUserData();
     fetchHeroText();
-  }, [session?.user?.email]);
+  }, [session?.user?.email, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const savingPromise = new Promise(async (resolve, reject) => {
+    try {
       const response = await fetch('/api/heroText', {
         method: 'PUT',
         headers: {
@@ -55,26 +60,23 @@ const HeroText = () => {
         body: JSON.stringify(heroTextData),
       });
 
-      if (response.ok) {
-        resolve();
-      } else {
-        reject();
+      if (!response.ok) {
+        throw new Error('Error updating hero text');
       }
-    });
 
-    await toast.promise(savingPromise, {
-      loading: 'Saving hero text...',
-      success: 'Hero text updated successfully!',
-      error: 'Error updating hero text',
-    });
+      toast.success('Hero text updated successfully!');
+    } catch (error) {
+      toast.error('Error updating hero text');
+      console.error('Error:', error);
+    }
   };
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Consider using a spinner or loading animation
   }
 
   if (!isAdmin) {
-    return <div className="mt-20 text-red-500">You are not admin</div>;
+    return <div className="mt-20 text-red-500">You are not an admin</div>;
   }
 
   return (

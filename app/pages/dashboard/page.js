@@ -3,24 +3,25 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { fetchUserData } from '../../utils/userData';
-import { useSession } from 'next-auth/react'; // Ensure you import useSession
-import toast from 'react-hot-toast'; // Import toast for notifications
+import { useSession } from 'next-auth/react'; 
+import toast from 'react-hot-toast'; 
+import { useRouter } from 'next/navigation';
 
 const DashBoard = () => {
-  const { data: session } = useSession(); // Access the session
-  const [users, setUsers] = useState([]); // To store the list of users
-  const [loading, setLoading] = useState(true); // Initial loading state
-  const [, setUserData] = useState(null);
+  const { data: session } = useSession(); 
+  const [users, setUsers] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [userData, setUserData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
 
-  // Fetch user data and users on component mount
   useEffect(() => {
     const getUserData = async () => {
       if (session?.user?.email) {
         try {
           const data = await fetchUserData(session.user.email);
           setUserData(data);
-          setIsAdmin(data?.isAdmin || false);
+          setIsAdmin(data?.isAdmin || data?.isSuperAdmin || false);
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -45,9 +46,17 @@ const DashBoard = () => {
       }
     };
 
-    getUserData();
-    fetchUsers();
+    getUserData().then(() => {
+      fetchUsers();
+    });
   }, [session]); // Depend on session to re-fetch if it changes
+
+  // Redirect if the user is not an admin or super admin
+  useEffect(() => {
+    if (!loading && !isAdmin) {
+      router.push('/'); // Redirect to home page
+    }
+  }, [loading, isAdmin, router]);
 
   // Handle the change of the admin checkbox
   const handleAdminToggle = async (userId, currentIsAdmin) => {
@@ -77,7 +86,7 @@ const DashBoard = () => {
       }
 
       // Show success notification
-      toast.success(`Admin status updated successfully for ${userId}`, {
+      toast.success(`Admin status updated successfully`, {
         id: loadingToast,
       });
     } catch (error) {
@@ -99,10 +108,6 @@ const DashBoard = () => {
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (!isAdmin) {
-    return <div className='text-red-500 mt-20'>You are not an Admin</div>;
   }
 
   return (

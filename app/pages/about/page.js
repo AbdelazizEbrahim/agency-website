@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { TrashIcon, PencilIcon } from '@heroicons/react/20/solid';
 import { fetchUserData } from '../../utils/userData';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 import toast from "react-hot-toast";
 
 const AdminAboutPage = () => {
     const { data: session, status } = useSession();
+    const router = useRouter(); // Initialize useRouter
     const [texts, setTexts] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -17,16 +19,25 @@ const AdminAboutPage = () => {
     const [showTextForm, setShowTextForm] = useState(false);
     const [showCoreValueForm, setShowCoreValueForm] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isSuperAdmin, setIsSuperAdmin] = useState(false);
     const [editId, setEditId] = useState(null);
 
     useEffect(() => {
         const getUserData = async () => {
             const data = await fetchUserData(session?.user?.email);
             setIsAdmin(data?.isAdmin || false);
+            setIsSuperAdmin(data?.isSuperAdmin || false);
+
+            if (!data?.isAdmin && !data?.isSuperAdmin) {
+                router.push('/'); 
+            }
         };
-        getUserData();
-        fetchAboutTexts();
-        fetchCoreValues();
+
+        if (session) {
+            getUserData();
+            fetchAboutTexts();
+            fetchCoreValues();
+        }
     }, [session]);
 
     const fetchAboutTexts = async () => {
@@ -151,10 +162,6 @@ const AdminAboutPage = () => {
         return <div>Loading...</div>;
     }
 
-    if (!isAdmin) {
-        return <div className="mt-20 text-red-500">You are not admin</div>;
-    }
-
     return (
         <div className='pt-[5rem] pb-[3rem] w-[80%] mx-auto lg:w-1/2'>
             <h1 className='text-2xl font-bold mb-5'>Admin About Page Management</h1>
@@ -247,8 +254,8 @@ const AdminAboutPage = () => {
                         </button>
                     </div>
                 )}
-                {coreValues.map((coreValue, index) => (
-                    <div key={index} className='flex justify-between items-center border-b py-2'>
+                {coreValues.map((coreValue) => (
+                    <div key={coreValue._id} className='flex justify-between items-center border-b py-2'>
                         <p>{coreValue.coreValue}</p>
                         <button onClick={() => deleteCoreValue(coreValue._id)} className='text-red-600'>
                             <TrashIcon className='w-5 h-5' />

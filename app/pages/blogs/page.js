@@ -7,9 +7,11 @@ import { storage } from '../../utils/firebase';
 import { fetchUserData } from '../../utils/userData';
 import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const Blog = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [newPost, setNewPost] = useState({ image: '', title: '', content: '' });
@@ -20,11 +22,23 @@ const Blog = () => {
 
   useEffect(() => {
     const fetchUserDataAndPosts = async () => {
-      const userData = await fetchUserData(session?.user?.email);
-      setIsAdmin(userData?.isAdmin || false);
-      setAuthor(userData?.name.split(' ')[0]);
-      
+      if (!session?.user?.email) return;
+
+      // Fetch user data
+      const userData = await fetchUserData(session.user.email);
+
+      // Check if user is an admin or super admin
+      if (userData?.isAdmin || userData?.isSuperAdmin) {
+        setIsAdmin(true);
+        setAuthor(userData.name.split(' ')[0]);
+      } else {
+        // Redirect to home page if not admin or super admin
+        router.push('/');
+        return;
+      }
+
       try {
+        // Fetch blog posts
         const response = await fetch('/api/blog');
         const data = await response.json();
         setPosts(data);
@@ -34,9 +48,9 @@ const Blog = () => {
         setFetching(false);
       }
     };
-    
+
     fetchUserDataAndPosts();
-  }, [session?.user?.email]);
+  }, [session?.user?.email, router]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

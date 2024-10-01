@@ -6,7 +6,9 @@ const userSchema = new Schema({
     image: String,
     name: String,
     googleId: String , 
-    isAdmin: {type: Boolean, default: false}
+    isAdmin: {type: Boolean, default: false},
+    isSuperAdmin: {type: Boolean, default: false}
+
 }, {timeStamp: true})
 
 const User = models.User || model('User', userSchema );

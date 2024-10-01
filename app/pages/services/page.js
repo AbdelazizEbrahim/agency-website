@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import ServiceCard from '../../components/Services/ServiceCard'
+import ServiceCard from '../../components/Services/ServiceCard';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../utils/firebase';
 import { fetchUserData } from '../../utils/userData';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 const Services = () => {
   const { data: session, status } = useSession();
+  const router = useRouter(); // Initialize useRouter
   const [services, setServices] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [newService, setNewService] = useState({
@@ -24,7 +26,11 @@ const Services = () => {
   useEffect(() => {
     const getUserData = async () => {
       const data = await fetchUserData(session?.user?.email);
-      setIsAdmin(data?.isAdmin || false);
+      if (!data?.isAdmin && !data?.isSuperAdmin) {
+        router.push('/'); 
+      } else {
+        setIsAdmin(!data?.isAdmin || !data?.isSuperAdmin || false);
+      }
     };
 
     const fetchServices = async () => {
@@ -39,11 +45,12 @@ const Services = () => {
       }
     };
 
-    getUserData();
-    fetchServices();
-  }, [session?.user?.email]);
+    if (session?.user?.email) {
+      getUserData();
+      fetchServices();
+    }
+  }, [session?.user?.email, router]); 
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewService((prev) => ({ ...prev, [name]: value }));

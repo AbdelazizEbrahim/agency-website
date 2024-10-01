@@ -11,6 +11,7 @@ import Image from 'next/image';
 interface UserData {
   image?: string; 
   isAdmin?: boolean; 
+  isSuperAdmin?: boolean; 
 }
 
 interface Props {
@@ -112,7 +113,7 @@ const Nav = ({ openNav }: Props) => {
                 />
               )}
               <div className="relative" ref={dropdownRef}>
-                {userData?.isAdmin && dropdownOpen && (
+                {userData?.isAdmin || userData?.isSuperAdmin && dropdownOpen && (
                   <div className="absolute -right-10 mt-8 w-32 bg-white rounded-md shadow-lg z-10">
                     <ul className="py-1">
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
