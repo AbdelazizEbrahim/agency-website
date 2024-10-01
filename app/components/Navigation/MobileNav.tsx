@@ -23,19 +23,19 @@ const MobileNav = ({ nav, closeNav }: Props) => {
       />
       <ul className='relative z-[201] space-y-10 flex flex-col justify-center h-full items-center'>
         <li className='text-[25px] cursor-pointer text-white transition-colors duration-200 hover:text-yellow-300'>
-          <Link href={'/'}>Home</Link>
+          <Link href={'/'} onClick={closeNav}>Home</Link>
         </li>
         <li className='text-[25px] cursor-pointer text-white transition-colors duration-200 hover:text-yellow-300'>
-          <Link href={'#services'}>Services</Link>
+          <Link href={'#services'} onClick={closeNav}>Services</Link>
         </li>
         <li className='text-[25px] cursor-pointer text-white transition-colors duration-200 hover:text-yellow-300'>
-          <Link href={'#about'}>About</Link>
+          <Link href={'#about'} onClick={closeNav}>About</Link>
         </li>
         <li className='text-[25px] cursor-pointer text-white transition-colors duration-200 hover:text-yellow-300'>
-          <Link href={'#blogs'}>Blogs</Link>
+          <Link href={'#blogs'} onClick={closeNav}>Blogs</Link>
         </li>
         <li className='text-[25px] cursor-pointer text-white transition-colors duration-200 hover:text-yellow-300'>
-          <Link href={'#contactUs'}>Contact Us</Link>
+          <Link href={'#contactUs'} onClick={closeNav}>Contact Us</Link>
         </li>
       </ul>
     </div>

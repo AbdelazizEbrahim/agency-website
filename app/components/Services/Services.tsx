@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SectionHeading from '../SectionHeading/SectionHeading';
-import FeatureCard from './ServiceCard';
+import ServiceCard from './ServiceCard';
 import AOS from 'aos';
 import 'aos/dist/aos.css'; 
 
@@ -11,7 +11,7 @@ interface Feature {
   description: string;
 }
 
-const Features = () => {
+const Service = () => {
   const [features, setFeatures] = useState<Feature[]>([]); 
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Features = () => {
               data-aos-delay={index * 200} // Dynamic delay based on index
               data-aos-anchor-placement='top-center'
             >
-              <FeatureCard 
+              <ServiceCard 
                 title={feature.title} 
                 image={feature.image} 
                 description={feature.description} 
@@ -54,4 +54,4 @@ const Features = () => {
   );
 }
 
-export default Features;
+export default Service;

@@ -8,18 +8,22 @@ import { Bars3BottomRightIcon } from '@heroicons/react/16/solid';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 
+interface UserData {
+  image?: string; 
+  isAdmin?: boolean;
+}
+
 interface Props {
   openNav: () => void;
 }
 
 const Nav = ({ openNav }: Props) => {
   const { data: session, status } = useSession();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Fetch user data from the API when the session is available
     const fetchUserData = async () => {
       if (session?.user?.email) {
         try {
@@ -54,7 +58,8 @@ const Nav = ({ openNav }: Props) => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !(dropdownRef.current as any).contains(event.target)) {
+    const target = event.target as Node; // Specify the type for target
+    if (dropdownRef.current && !dropdownRef.current.contains(target)) {
       setDropdownOpen(false);
     }
   };
@@ -75,7 +80,7 @@ const Nav = ({ openNav }: Props) => {
         </h1>
 
         <ul className="hidden lg:flex items-center space-x-10">
-          <li className="text-[17px] cursor-pointer text-red-500">
+          <li className="text-[17px] cursor-pointer hover:text-red-500">
             <Link href="/">Home</Link>
           </li>
           <li className="text-[17px] cursor-pointer hover:text-red-500 transition-all duration-all">

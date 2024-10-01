@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { useEffect } from 'react'
-import Hero from './components/Hero/Hero'
-import Features from './components/Services/Services'
-import CustomerSupport from './components/About/About'
-import SupportTeams from './components/SupportTeam/SupportTeams'
-import Footer from './components/Footer/Footer'
+import React, { useEffect } from 'react';
+import Hero from './components/Hero/Hero';
+import Service from './components/Services/Services';
+import AboutPage from './components/About/About';
+import Blog from './components/Blogs/Blogs';
+import ContactUs from './components/ContactUs/ContactUs';
+import Footer from './components/Footer/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -16,30 +16,28 @@ const HomePage = () => {
       duration: 1000,
       easing: "ease",
       once: true,
-      anchorPlacement: "top-bottom"
+      anchorPlacement: "top-bottom",
     });
-  }, [])
+  }, []);
 
   return (
-<div className='overflow-x-hidden scroll-smooth'> 
-      <Hero/>
-     <section id='services'>
-         
+    <div className='overflow-x-hidden scroll-smooth'> 
+      <Hero />
+      <section id='services'>
+        <Service />
       </section>
       <section id='about'>
-         <Features/>
+        <AboutPage />
       </section>
       <section id='blogs'>
-        <CustomerSupport/>
+        <Blog />
       </section>
       <section id='contactUs'>
-         <SupportTeams/>
+        <ContactUs />
       </section>
-      <section id='services'>
-         <Footer/>
-      </section>
+      <Footer />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

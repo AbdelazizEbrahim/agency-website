@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import FeatureCard from '@/app/components/Features/FeatureCard';
+import ServiceCard from '../../components/Services/ServiceCard'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../utils/firebase';
 import { fetchUserData } from '../../utils/userData';
@@ -193,7 +193,7 @@ const Services = () => {
       <div className='grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6'>
         {services.map((service) => (
           <div key={service._id} className='relative'>
-            <FeatureCard
+            <ServiceCard
               image={service.image}
               title={service.title}
               description={service.description}
