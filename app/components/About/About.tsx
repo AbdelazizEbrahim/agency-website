@@ -4,9 +4,18 @@ import { CheckIcon } from '@heroicons/react/16/solid';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+interface AboutText {
+  title: string;
+  description: string;
+}
+
+interface CoreValue {
+  coreValue: string;
+}
+
 const AboutPage = () => {
-  const [aboutTextArray, setAboutTextArray] = useState([]);
-  const [coreValues, setCoreValues] = useState([]);
+  const [aboutTextArray, setAboutTextArray] = useState<AboutText[]>([]);
+  const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -27,8 +36,7 @@ const AboutPage = () => {
       try {
         const response = await fetch('/api/coreValues'); // Adjust the API endpoint as needed
         const data = await response.json();
-        const sortedValues = data.sort((a, b) => a.riderNumber - b.riderNumber); // Sort by rider number
-        setCoreValues(sortedValues);
+        setCoreValues(data); // No need to sort anymore
       } catch (error) {
         console.error('Error fetching core values:', error);
       }
@@ -67,11 +75,11 @@ const AboutPage = () => {
           <p className='mt-[1.5rem] mb-[1.5rem] text-black opacity-90 text-[15px] md:text-[16px]'>
             We believe in delivering exceptional service with integrity, innovation, and sustainability. Our team is committed to providing:
           </p>
-          {coreValues.map((value) => (
-            <div key={value.orderNumber} className='flex items-center mb-[1rem] space-x-3'>
+          {coreValues.map((value, index) => (
+            <div key={index} className='flex items-center mb-[1rem] space-x-3'>
               <CheckIcon className='w-[1.3rem] h-[1.3rem] text-red-600' />
               <p className='text-[17px] text-[#02073e] font-[500]'>
-                {value.coreValue} {/* Assuming core values contain a 'text' field */}
+                {value.coreValue}
               </p>
             </div>
           ))}
