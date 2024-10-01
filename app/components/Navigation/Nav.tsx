@@ -101,7 +101,7 @@ const Nav = ({ openNav }: Props) => {
           {status === 'authenticated' ? (
             <>
               <ButtonBlue text="Logout" onClick={handleLogout} />
-              {userData?.image && (
+              {userData && (
                 <Image
                   src={userData.image || '/user.png'}
                   alt="Profile"
