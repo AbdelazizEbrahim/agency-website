@@ -11,8 +11,8 @@ const DashBoard = () => {
   const { data: session } = useSession(); 
   const [users, setUsers] = useState([]); 
   const [loading, setLoading] = useState(true); 
-  const [userData, setUserData] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,8 +20,12 @@ const DashBoard = () => {
       if (session?.user?.email) {
         try {
           const data = await fetchUserData(session.user.email);
-          setUserData(data);
-          setIsAdmin(data?.isAdmin || data?.isSuperAdmin || false);
+          setIsAdmin(data?.isAdmin || false);
+          setIsSuperAdmin(data?.isSuperAdmin || false);
+    
+          if (!data?.isAdmin && !data?.isSuperAdmin) {
+              router.push('/'); 
+          }
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -49,14 +53,7 @@ const DashBoard = () => {
     getUserData().then(() => {
       fetchUsers();
     });
-  }, [session]); // Depend on session to re-fetch if it changes
-
-  // Redirect if the user is not an admin or super admin
-  useEffect(() => {
-    if (!loading && !isAdmin) {
-      router.push('/'); // Redirect to home page
-    }
-  }, [loading, isAdmin, router]);
+  }, [session]); 
 
   // Handle the change of the admin checkbox
   const handleAdminToggle = async (userId, currentIsAdmin) => {
@@ -110,38 +107,40 @@ const DashBoard = () => {
     return <div>Loading...</div>;
   }
 
-  return (
-    <div className='mt-20'>
-      <h1 className='font-semibold text-lg ml-10'>Admin DashBoard</h1>
-      <div className='grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4'>
-        {users.length > 0 ? (
-          users.map((user) => (
-            <div key={user._id} className='text-center p-5 border rounded-lg'>
-              <Image
-                src={user.image || '/user.png'}
-                alt={user.name}
-                width={100}
-                height={100}
-                className='rounded-full'
-              />
-              <p className='font-semibold'>{user.name}</p>
-              <p>{user.email}</p>
-              <label className='flex items-center justify-center gap-2'>
-                <input
-                  type='checkbox'
-                  checked={user.isAdmin}
-                  onChange={() => handleAdminToggle(user._id, user.isAdmin)}
+  if (isAdmin || isSuperAdmin ) {
+    return (
+      <div className='mt-20'>
+        <h1 className='font-semibold text-lg ml-10'>Admin DashBoard</h1>
+        <div className='grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4'>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <div key={user._id} className='text-center p-5 border rounded-lg'>
+                <Image
+                  src={user.image || '/user.png'}
+                  alt={user.name}
+                  width={100}
+                  height={100}
+                  className='rounded-full'
                 />
-                <span>Make Admin</span>
-              </label>
-            </div>
-          ))
-        ) : (
-          <div>No users found</div>
-        )}
+                <p className='font-semibold'>{user.name}</p>
+                <p>{user.email}</p>
+                <label className='flex items-center justify-center gap-2'>
+                  <input
+                    type='checkbox'
+                    checked={user.isAdmin}
+                    onChange={() => handleAdminToggle(user._id, user.isAdmin)}
+                  />
+                  <span>Make Admin</span>
+                </label>
+              </div>
+            ))
+          ) : (
+            <div>No users found</div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default DashBoard;

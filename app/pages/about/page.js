@@ -162,109 +162,111 @@ const AdminAboutPage = () => {
         return <div>Loading...</div>;
     }
 
-    return (
-        <div className='pt-[5rem] pb-[3rem] w-[80%] mx-auto lg:w-1/2'>
-            <h1 className='text-2xl font-bold mb-5'>Admin About Page Management</h1>
-
-            {/* Add About Page Text Form */}
-            <div className='mb-5'>
-                <button
-                    onClick={() => {
-                        resetForm();
-                        setShowTextForm(!showTextForm);
-                    }}
-                    className='bg-blue-600 text-white rounded px-4 py-2 mb-2'>
-                    {showTextForm ? 'Cancel' : 'Add Text'}
-                </button>
-
-                {showTextForm && (
-                    <div className='flex flex-col mb-5'>
-                        <input
-                            type='text'
-                            placeholder='Title'
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className='border border-gray-300 rounded p-2 mb-2'
-                        />
-                        <textarea
-                            placeholder='Description'
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className='border border-gray-300 rounded p-2 mb-2'
-                            rows='4'
-                        />
-                        <button
-                            onClick={handleAddText}
-                            className='bg-green-600 text-white rounded px-4 py-2'>
-                            {isEditing ? 'Update Text' : 'Save Text'}
-                        </button>
-                    </div>
-                )}
-            </div>
-
-            {/* List of About Page Texts */}
-            <div className='mb-5'>
-                <h2 className='text-xl font-bold'>About Page Texts</h2>
-                {texts.map((text, index) => (
-                    <div key={index} className='flex justify-between items-center border-b py-2'>
-                        <div>
-                            <div className='flex'>
-                                <label className='mr-3'>Title:  </label>
-                                <h3 className='font-semibold'>{text.title}</h3>
+    if ( isAdmin || isSuperAdmin){
+        return (
+            <div className='pt-[5rem] pb-[3rem] w-[80%] mx-auto lg:w-1/2'>
+                <h1 className='text-2xl font-bold mb-5'>Admin About Page Management</h1>
+    
+                {/* Add About Page Text Form */}
+                <div className='mb-5'>
+                    <button
+                        onClick={() => {
+                            resetForm();
+                            setShowTextForm(!showTextForm);
+                        }}
+                        className='bg-blue-600 text-white rounded px-4 py-2 mb-2'>
+                        {showTextForm ? 'Cancel' : 'Add Text'}
+                    </button>
+    
+                    {showTextForm && (
+                        <div className='flex flex-col mb-5'>
+                            <input
+                                type='text'
+                                placeholder='Title'
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className='border border-gray-300 rounded p-2 mb-2'
+                            />
+                            <textarea
+                                placeholder='Description'
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className='border border-gray-300 rounded p-2 mb-2'
+                                rows='4'
+                            />
+                            <button
+                                onClick={handleAddText}
+                                className='bg-green-600 text-white rounded px-4 py-2'>
+                                {isEditing ? 'Update Text' : 'Save Text'}
+                            </button>
+                        </div>
+                    )}
+                </div>
+    
+                {/* List of About Page Texts */}
+                <div className='mb-5'>
+                    <h2 className='text-xl font-bold'>About Page Texts</h2>
+                    {texts.map((text, index) => (
+                        <div key={index} className='flex justify-between items-center border-b py-2'>
+                            <div>
+                                <div className='flex'>
+                                    <label className='mr-3'>Title:  </label>
+                                    <h3 className='font-semibold'>{text.title}</h3>
+                                </div>
+                                <div className='flex'>
+                                    <label className='mr-3'>Description: </label>
+                                    <p>{text.description}</p>
+                                </div>
                             </div>
-                            <div className='flex'>
-                                <label className='mr-3'>Description: </label>
-                                <p>{text.description}</p>
+                            <div className='flex space-x-2'>
+                                <button onClick={() => editText(index)} className='text-green-600'>
+                                    <PencilIcon className='w-5 h-5' />
+                                </button>
+                                <button onClick={() => deleteText(text._id)} className='text-red-600'>
+                                    <TrashIcon className='w-5 h-5' />
+                                </button>
                             </div>
                         </div>
-                        <div className='flex space-x-2'>
-                            <button onClick={() => editText(index)} className='text-green-600'>
-                                <PencilIcon className='w-5 h-5' />
+                    ))}
+                </div>
+    
+                {/* Add Core Value */}
+                <div className='mb-5'>
+                    <h2 className='text-xl font-bold'>Core Values</h2>
+                    <button
+                        onClick={() => setShowCoreValueForm(!showCoreValueForm)}
+                        className='bg-blue-600 text-white rounded px-4 py-2 mb-2'>
+                        {showCoreValueForm ? 'Cancel' : 'Add Core Value'}
+                    </button>
+    
+                    {showCoreValueForm && (
+                        <div className='flex mb-2'>
+                            <input
+                                type='text'
+                                placeholder='New Core Value'
+                                value={coreValueInput}
+                                onChange={(e) => setCoreValueInput(e.target.value)}
+                                className='border border-gray-300 rounded p-2 mr-2'
+                            />
+                            <button
+                                onClick={handleAddCoreValue}
+                                className='bg-green-600 text-white rounded px-4 py-2'>
+                                Save Core Value
                             </button>
-                            <button onClick={() => deleteText(text._id)} className='text-red-600'>
+                        </div>
+                    )}
+                    {coreValues.map((coreValue) => (
+                        <div key={coreValue._id} className='flex justify-between items-center border-b py-2'>
+                            <p>{coreValue.coreValue}</p>
+                            <button onClick={() => deleteCoreValue(coreValue._id)} className='text-red-600'>
                                 <TrashIcon className='w-5 h-5' />
                             </button>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
-
-            {/* Add Core Value */}
-            <div className='mb-5'>
-                <h2 className='text-xl font-bold'>Core Values</h2>
-                <button
-                    onClick={() => setShowCoreValueForm(!showCoreValueForm)}
-                    className='bg-blue-600 text-white rounded px-4 py-2 mb-2'>
-                    {showCoreValueForm ? 'Cancel' : 'Add Core Value'}
-                </button>
-
-                {showCoreValueForm && (
-                    <div className='flex mb-2'>
-                        <input
-                            type='text'
-                            placeholder='New Core Value'
-                            value={coreValueInput}
-                            onChange={(e) => setCoreValueInput(e.target.value)}
-                            className='border border-gray-300 rounded p-2 mr-2'
-                        />
-                        <button
-                            onClick={handleAddCoreValue}
-                            className='bg-green-600 text-white rounded px-4 py-2'>
-                            Save Core Value
-                        </button>
-                    </div>
-                )}
-                {coreValues.map((coreValue) => (
-                    <div key={coreValue._id} className='flex justify-between items-center border-b py-2'>
-                        <p>{coreValue.coreValue}</p>
-                        <button onClick={() => deleteCoreValue(coreValue._id)} className='text-red-600'>
-                            <TrashIcon className='w-5 h-5' />
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+        );
+    }
 };
 
 export default AdminAboutPage;

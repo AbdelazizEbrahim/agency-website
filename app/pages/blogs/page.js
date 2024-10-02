@@ -14,6 +14,7 @@ const Blog = () => {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [newPost, setNewPost] = useState({ image: '', title: '', content: '' });
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,18 +24,13 @@ const Blog = () => {
   useEffect(() => {
     const fetchUserDataAndPosts = async () => {
       if (!session?.user?.email) return;
-
       // Fetch user data
       const userData = await fetchUserData(session.user.email);
+      setIsAdmin(userData?.isAdmin || false);
+      setIsSuperAdmin(userData?.isSuperAdmin || false);
 
-      // Check if user is an admin or super admin
-      if (userData?.isAdmin || userData?.isSuperAdmin) {
-        setIsAdmin(true);
-        setAuthor(userData.name.split(' ')[0]);
-      } else {
-        // Redirect to home page if not admin or super admin
-        router.push('/');
-        return;
+      if (!userData?.isAdmin && !userData?.isSuperAdmin) {
+          router.push('/'); 
       }
 
       try {
@@ -119,8 +115,8 @@ const Blog = () => {
   };
 
   if (status === 'loading' || fetching) return <div>Loading...</div>;
-  if (!isAdmin) return <div className="mt-20 text-red-500">You are not admin</div>;
-
+  if (isAdmin || isSuperAdmin) {
+    
   return (
     <div className='mt-20 m-10'>
       <h1 className='text-xl font-bold mb-6'>Blog Posts</h1>
@@ -167,6 +163,7 @@ const Blog = () => {
       </div>
     </div>
   );
+  }
 };
 
 export default Blog;

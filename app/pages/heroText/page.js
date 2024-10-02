@@ -11,6 +11,7 @@ const HeroText = () => {
   const [userData, setUserData] = useState(null);
   const [heroTextData, setHeroTextData] = useState({ title: '', text: '', image: '' });
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,11 +19,11 @@ const HeroText = () => {
       if (session?.user?.email) {
         try {
           const data = await fetchUserData(session.user.email);
-          setUserData(data);
-          if (data?.isAdmin || data?.isSuperAdmin) {
-            setIsAdmin(true);
-          } else {
-            router.push('/'); 
+          setIsAdmin(data?.isAdmin || false);
+          setIsSuperAdmin(data?.isSuperAdmin || false);
+    
+          if (!data?.isAdmin && !data?.isSuperAdmin) {
+              router.push('/'); 
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -75,46 +76,44 @@ const HeroText = () => {
     return <div>Loading...</div>; // Consider using a spinner or loading animation
   }
 
-  if (!isAdmin) {
-    return <div className="mt-20 text-red-500">You are not an admin</div>;
-  }
-
-  return (
-    <div className="mt-20 ml-5 mr-5 flex flex-col lg:w-3/5 overflow-hidden">
-      <div className="lg:w-2/3 sm:w-full mb-6 sm:ml-8 sm:mr-8">
-        <h1 className="text-xl font-bold mb-4">Update Hero Text</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1">Title</label>
-            <textarea
-              value={heroTextData.title}
-              onChange={(e) =>
-                setHeroTextData((prev) => ({ ...prev, title: e.target.value }))
-              }
-              rows={3}
-              className="w-full border rounded px-2 py-1"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Text</label>
-            <textarea
-              value={heroTextData.text}
-              onChange={(e) =>
-                setHeroTextData((prev) => ({ ...prev, text: e.target.value }))
-              }
-              className="w-full border rounded px-2 py-1"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Update Hero Text
-          </button>
-        </form>
+  if (isAdmin || isSuperAdmin) {
+    return (
+      <div className="mt-20 ml-5 mr-5 flex flex-col lg:w-3/5 overflow-hidden">
+        <div className="lg:w-2/3 sm:w-full mb-6 sm:ml-8 sm:mr-8">
+          <h1 className="text-xl font-bold mb-4">Update Hero Text</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block mb-1">Title</label>
+              <textarea
+                value={heroTextData.title}
+                onChange={(e) =>
+                  setHeroTextData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                rows={3}
+                className="w-full border rounded px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Text</label>
+              <textarea
+                value={heroTextData.text}
+                onChange={(e) =>
+                  setHeroTextData((prev) => ({ ...prev, text: e.target.value }))
+                }
+                className="w-full border rounded px-2 py-1"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Update Hero Text
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default HeroText;

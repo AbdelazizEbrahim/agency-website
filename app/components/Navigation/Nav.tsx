@@ -76,10 +76,9 @@ const Nav = ({ openNav }: Props) => {
     <div className="h-[12vh] bg-white shadow-md">
       <div className="w-[85%] flex items-center justify-between mx-auto h-[12vh]">
         <h1 className="text-[16px] md:text-[25px] font-bold text-slate-800">
-          <span className="text-[27px] md:text-[40px] text-red-600">R</span>
-          ihla
+          <span className="text-[27px] md:text-[40px] text-red-600">R</span>ihla
         </h1>
-
+  
         <ul className="hidden lg:flex items-center space-x-10">
           <li className="text-[17px] cursor-pointer hover:text-red-500">
             <Link href="/">Home</Link>
@@ -97,9 +96,9 @@ const Nav = ({ openNav }: Props) => {
             <Link href="#contactUs">Contact Us</Link>
           </li>
         </ul>
-
+  
         <div className="flex items-center space-x-2 md:space-x-5">
-          {status === 'authenticated' ? (
+          {status === 'loading' ? null : status === 'authenticated' ? (
             <>
               <ButtonBlue text="Logout" onClick={handleLogout} />
               {userData && (
@@ -113,7 +112,7 @@ const Nav = ({ openNav }: Props) => {
                 />
               )}
               <div className="relative" ref={dropdownRef}>
-                {userData?.isAdmin || userData?.isSuperAdmin && dropdownOpen && (
+                {(userData?.isAdmin || userData?.isSuperAdmin) && dropdownOpen && (
                   <div className="absolute -right-10 mt-8 w-32 bg-white rounded-md shadow-lg z-10">
                     <ul className="py-1">
                       <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
@@ -151,6 +150,7 @@ const Nav = ({ openNav }: Props) => {
       </div>
     </div>
   );
+  
 };
 
 export default Nav;

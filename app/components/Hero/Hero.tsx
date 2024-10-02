@@ -44,7 +44,9 @@ const Hero = () => {
             data-aos-delay = '400'
             className='flex items-center space-x-4 md:space-x-6'>
             <ButtonBlue text="Get Started" />
-            <ButtonRed text="Explore Features" />
+            <a href="#services">
+              <ButtonRed text="Explore Features" />
+            </a>
           </div>
         </div>
         <div 
